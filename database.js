@@ -22,26 +22,37 @@ exports.insert = function (db, word) {
     collection.find({"word":word}).toArray(function (err, result) {
         if (err) {
             console.log("Error reading value of %s from database", word)
+            console.log(err)
         } else {
-            var newCount
-            //TODO :: if the value already exists, need to update value, not just insert
             if (result.length == 0)  {
-                newCount = 1
+                collection.insert({"word":word, "count" : 1}, function(err, result) {
+                    if (err) {
+                        console.log(err)
+                    } else {
+                        console.log("successful")
+                    }
+                });
             } else if (result.length == 1) {
                 currentValue = result[0].count
-                if (isNaN(currentValue)) {
-                    newCount = 0
-                } else {
-                    newCount  = currentValue + 1
+                if (!isNaN(currentValue)) {
+                    newValue = currentValue + 1
+                    update(db, word, newValue)
                 }
             }
-            collection.insert({"word":word, "count" : newCount}, function(err, result) {
-                if (err) {
-                    console.log(err)
-                } else {
-                    console.log("successful")
-                }
-            });
+        }
+    });
+}
+
+function update(db, word, newValue) {
+    var collection = db.collection('dictionary')
+    collection.update({"word":word}, {$set: {"count": newValue}}, function (err, updated) {
+        if (err) {
+            console.log("Error updating value of %s from database", word)
+            console.log(err)
+        } else if (updated) {
+            console.log("Successfully updated the value of %s to %s", word, newValue)
+        } else {
+            console.log("Word '%s' does not exist in database")
         }
     });
 }
