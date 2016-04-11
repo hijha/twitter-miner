@@ -16,18 +16,32 @@ exports.connectToDatabase = function (callback) {
     });
 }
 
+
 exports.insert = function (db, word) {
     var collection = db.collection('dictionary')
-    var currentValue
     collection.find({"word":word}).toArray(function (err, result) {
-        currentValue = result[0].count
-        newCount  = currentValue + 1
-        collection.insert({"word":word, "count" : newCount}, function(err, result) {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log("successful")
+        if (err) {
+            console.log("Error reading value of %s from database", word)
+        } else {
+            var newCount
+            //TODO :: if the value already exists, need to update value, not just insert
+            if (result.length == 0)  {
+                newCount = 1
+            } else if (result.length == 1) {
+                currentValue = result[0].count
+                if (isNaN(currentValue)) {
+                    newCount = 0
+                } else {
+                    newCount  = currentValue + 1
+                }
             }
-        });
+            collection.insert({"word":word, "count" : newCount}, function(err, result) {
+                if (err) {
+                    console.log(err)
+                } else {
+                    console.log("successful")
+                }
+            });
+        }
     });
 }
