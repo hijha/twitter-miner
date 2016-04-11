@@ -13,7 +13,21 @@ exports.connectToDatabase = function (callback) {
             console.log('Connection established to', url);
         }
         return callback(db)
-        //collection = db.collection('dictionary')
-        //collection.insert({"word":"hello", "count" : 10});
+    });
+}
+
+exports.insert = function (db, word) {
+    var collection = db.collection('dictionary')
+    var currentValue
+    collection.find({"word":word}).toArray(function (err, result) {
+        currentValue = result[0].count
+        newCount  = currentValue + 1
+        collection.insert({"word":word, "count" : newCount}, function(err, result) {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log("successful")
+            }
+        });
     });
 }
