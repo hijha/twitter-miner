@@ -17,42 +17,47 @@ exports.connectToDatabase = function (callback) {
 }
 
 
-exports.insert = function (db, word) {
+exports.insert = function (db, word, callback) {
     var collection = db.collection('dictionary')
     collection.find({"word":word}).toArray(function (err, result) {
         if (err) {
-            console.log("Error reading value of %s from database", word)
-            console.log(err)
+            return callback(err)
         } else {
             if (result.length == 0)  {
                 collection.insert({"word":word, "count" : 1}, function(err, result) {
                     if (err) {
-                        console.log(err)
+                        return callback(err)
                     } else {
-                        console.log("successful")
+                        return callback(null, "success")
                     }
                 });
             } else if (result.length == 1) {
                 currentValue = result[0].count
                 if (!isNaN(currentValue)) {
                     newValue = currentValue + 1
-                    update(db, word, newValue)
+                    update(db, word, newValue, function(err, result) {
+                        if (err) {
+                            return callback(err)
+                        } else {
+                            return callback(null, "success")
+                        }
+                    });
                 }
             }
         }
     });
 }
 
-function update(db, word, newValue) {
+function update(db, word, newValue, callback) {
     var collection = db.collection('dictionary')
     collection.update({"word":word}, {$set: {"count": newValue}}, function (err, updated) {
         if (err) {
-            console.log("Error updating value of %s from database", word)
-            console.log(err)
+            callback(err)
         } else if (updated) {
-            console.log("Successfully updated the value of %s to %s", word, newValue)
+            callback(null, "Success")
         } else {
-            console.log("Word '%s' does not exist in database")
+            err = "Word " + word + " does not exist in database"
+            callback(err)
         }
     });
 }
