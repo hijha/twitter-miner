@@ -34,12 +34,11 @@ var timelineSuccess = function (data) {
 function parseTweet(tweet) {
     tokenizer = new natural.WordTokenizer();
     var wordArray = tokenizer.tokenize(tweet)
-    for (int i = 0; i < wordArray.length; i++) {
     wordArray.forEach(function(word) {
         database.insert(myDB, word, function(err, result) {
             if (err) {
                 console.log(err)
-            } else if (result == "success") {          
+            } else if (result == "success") {
                 console.log("Word successfully added to database")
             } else {
                 console.log("result %s", result)
