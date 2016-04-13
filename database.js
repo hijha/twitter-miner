@@ -16,35 +16,14 @@ exports.connectToDatabase = function (callback) {
     });
 }
 
-
-exports.insert = function (db, word, callback) {
+exports.insert = function (db, wordArray, callback) {
     var collection = db.collection('dictionary')
-    collection.find({"word":word}).toArray(function (err, result) {
-        if (err) {
-            return callback(err)
-        } else {
-            if (result.length == 0)  {
-                collection.insert({"word":word, "count" : 1}, function(err, result) {
-                    if (err) {
-                        return callback(err)
-                    } else {
-                        return callback(null, "success")
-                    }
-                });
-            } else if (result.length == 1) {
-                currentValue = result[0].count
-                if (!isNaN(currentValue)) {
-                    newValue = currentValue + 1
-                    update(db, word, newValue, function(err, result) {
-                        if (err) {
-                            return callback(err)
-                        } else {
-                            return callback(null, "success")
-                        }
-                    });
-                }
-            }
-        }
+    collection.bulkWrite(wordArray.map(function(word) {
+        return {"updateOne" : {"filter" : {"word" : word},
+                        "update" : {"$inc" : {"count" : 1 } }, 
+                        "upsert" : true } }
+    }), function (err, result) {
+        callback(null, result)
     });
 }
 
