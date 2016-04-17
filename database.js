@@ -18,25 +18,20 @@ exports.connectToDatabase = function (callback) {
 
 exports.insert = function (db, wordArray, callback) {
     var collection = db.collection('dictionary')
-    collection.bulkWrite(wordArray.map(function(word) {
-        return {"updateOne" : {"filter" : {"word" : word},
-                        "update" : {"$inc" : {"count" : 1 } }, 
-                        "upsert" : true } }
-    }), function (err, result) {
-        callback(null, result)
-    });
+
+    collection.bulkWrite(wordArray.map(insertCallback), function (err, result) {
+            if (err) {
+                console.log(err)
+            } else {
+                callback(null, result)
+            }
+        });
 }
 
-function update(db, word, newValue, callback) {
-    var collection = db.collection('dictionary')
-    collection.update({"word":word}, {$set: {"count": newValue}}, function (err, updated) {
-        if (err) {
-            callback(err)
-        } else if (updated) {
-            callback(null, "Success")
-        } else {
-            err = "Word " + word + " does not exist in database"
-            callback(err)
-        }
-    });
+function insertCallback(word) {
+    return { "updateOne" : {
+                "filter" : {"word" : word},
+                "update" : {"$inc"   : {"count" : 1 } },
+                "upsert" : true }
+    }
 }
