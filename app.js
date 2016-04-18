@@ -1,17 +1,8 @@
 natural = require('natural')
-Twitter = require('twitter-node-client').Twitter;
 database = require('./database')
-Twit = require ('twit')
+Twitter = require ('twit')
 
 var config = {
-    "consumerKey": process.env.CONSUMER_KEY,
-    "consumerSecret": process.env.CONSUMER_SECRET,
-    "accessToken": process.env.ACCESS_TOKEN,
-    "accessTokenSecret": process.env.ACCESS_TOKEN_SECRET,
-    "callBackUrl": ""
-}
-
-var config2 = {
     "consumer_key": process.env.CONSUMER_KEY,
     "consumer_secret": process.env.CONSUMER_SECRET,
     "access_token": process.env.ACCESS_TOKEN,
@@ -19,9 +10,7 @@ var config2 = {
     "timeout_ms": ""
 }
 
-
 var twitter = new Twitter(config);
-var twit = new Twit(config2);
 var myDB
 
 /*
@@ -68,7 +57,7 @@ function parseTweet(tweet) {
 };
 
 connect()
-twit.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 2}, timelineSuccess)
+twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 2}, timelineSuccess)
 
 function connect() {
     database.connectToDatabase(function(db) {
