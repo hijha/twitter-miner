@@ -1,6 +1,7 @@
 natural = require('natural')
 Twitter = require('twitter-node-client').Twitter;
 database = require('./database')
+Twit = require ('twit')
 
 var config = {
     "consumerKey": process.env.CONSUMER_KEY,
@@ -10,7 +11,17 @@ var config = {
     "callBackUrl": ""
 }
 
+var config2 = {
+    "consumer_key": process.env.CONSUMER_KEY,
+    "consumer_secret": process.env.CONSUMER_SECRET,
+    "access_token": process.env.ACCESS_TOKEN,
+    "access_token_secret": process.env.ACCESS_TOKEN_SECRET,
+    "timeout_ms": ""
+}
+
+
 var twitter = new Twitter(config);
+var twit = new Twit(config2);
 var myDB
 
 /*
@@ -27,10 +38,10 @@ var error = function (err, response, body) {
 
     TODO :: Instead of combining all the tweets, parse it individually?
 */
-var timelineSuccess = function (data) {
+var timelineSuccess = function (err, data, response) {
+    console.log(data)
     var text = ""
-    res = JSON.parse(data);
-    res.forEach(function(tweet) {
+    data.forEach(function(tweet) {
         if (text == "") {
             text = tweet.text
         } else {
@@ -57,7 +68,7 @@ function parseTweet(tweet) {
 };
 
 connect()
-twitter.getUserTimeline({'screen_name' : "jay_s_h", 'count' : 2}, error, timelineSuccess);
+twit.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 2}, timelineSuccess)
 
 function connect() {
     database.connectToDatabase(function(db) {
