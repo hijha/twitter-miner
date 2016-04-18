@@ -24,20 +24,12 @@ var error = function (err, response, body) {
     The callback function when the timeline is successfully retrieved.
     Combines the tweet into one single space-separated string value,
     which is then parsed.
-
-    TODO :: Instead of combining all the tweets, parse it individually?
 */
 var timelineSuccess = function (err, data, response) {
-    console.log(data)
     var text = ""
     data.forEach(function(tweet) {
-        if (text == "") {
-            text = tweet.text
-        } else {
-            text = text + " " + tweet.text
-        }
+        parseTweet(tweet.text.toLowerCase())
     });
-    parseTweet(text)
 };
 
 /*
@@ -51,13 +43,13 @@ function parseTweet(tweet) {
         if (err) {
             console.log(err)
         } else {
-            console.log("succcess ", result.upsertedCount)
+            console.log("Succcessfully added %s to the database ", result.upsertedCount)
         }
     });
 };
 
 connect()
-twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 2}, timelineSuccess)
+twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 3}, timelineSuccess)
 
 function connect() {
     database.connectToDatabase(function(db) {
