@@ -35,3 +35,19 @@ function insertCallback(word) {
                 "upsert" : true }
     }
 }
+
+/*
+    Function to read a specified number of values (count)
+    from the database, which is read in a sorted manner
+*/
+exports.getCommonWords = function (db, count, callback) {
+    var collection = db.collection('dictionary')
+
+    var cursor = collection.find().sort({'count': -1}).limit(count)
+
+    cursor.forEach(function (entry) {
+        if (entry != null) {
+            callback(null, entry.word)
+        }
+    });
+}
