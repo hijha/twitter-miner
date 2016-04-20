@@ -1,6 +1,8 @@
 natural = require('natural')
-database = require('./database')
 Twitter = require ('twit')
+
+database = require('./database')
+fs = require('fs')
 
 var config = {
     "consumer_key": process.env.CONSUMER_KEY,
@@ -12,6 +14,7 @@ var config = {
 
 var twitter = new Twitter(config);
 var myDB
+var stopWords = []
 
 /*
     Callback function for error when retrieving user timeline
@@ -35,11 +38,19 @@ var timelineSuccess = function (err, data, response) {
 /*
     Function that parses the text into individual words (token) and
     adds to database.
+
+    TODO:: result.upsertedcount only looks at inserts, not updates
 */
 function parseTweet(tweet) {
     tokenizer = new natural.WordTokenizer();
-    var wordArray = tokenizer.tokenize(tweet)
-    database.insert(myDB, wordArray, function(err, result) {
+    var tokenArray = tokenizer.tokenize(tweet)
+    var newTokenArray = []
+    for (i = 0; i < tokenArray.length; i++) {
+        if (stopWords.indexOf(tokenArray[i]) == -1) {
+            newTokenArray.push(tokenArray[i])
+        }
+    }
+    database.insert(myDB, newTokenArray, function(err, result) {
         if (err) {
             console.log(err)
         } else {
@@ -48,11 +59,18 @@ function parseTweet(tweet) {
     });
 };
 
+readStopWords()
 connect()
-twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 3}, timelineSuccess)
+twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 100}, timelineSuccess)
 
 function connect() {
     database.connectToDatabase(function(db) {
         myDB = db
+    });
+}
+
+function readStopWords() {
+    fs.readFile("stopwords.txt", function(err, output) {
+        stopWords = output.toString().split("\n");
     });
 }
