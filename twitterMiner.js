@@ -6,5 +6,6 @@ database = require('./database')
 database.connectToDatabase(function(db) {
     database.getCommonWords(db, 6, function(err, result) {
         console.log(result)
+        db.close()
     });
 });
