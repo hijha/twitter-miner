@@ -1,2 +1,2 @@
 # twitter-miner
-An data mining application for twitter
+A data mining application for twitter

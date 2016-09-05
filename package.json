@@ -1,0 +1,11 @@
+{
+  "name": "twitter-miner",
+  "version": "0.0.1",
+  "description": "Extracting information from Twitter",
+  "dependencies": {
+    "mongodb": "2.1.16",
+    "natural": "0.4.0",
+    "twit": "2.2.3",
+    "twitter-node-client": "0.0.6",
+  }
+}
