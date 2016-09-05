@@ -1,0 +1,29 @@
+{
+  "name": "twitter-miner",
+  "version": "0.0.1",
+  "description": "Extracting information from Twitter",
+  "main": "index.html",
+  "moduleType": [],
+  "keywords": [
+    "Twitter",
+    "NLP",
+    "Data Mining"
+  ],
+  "authors": [
+    "Himanshu Jha"
+  ],
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.3.5",
+    "font-awesome": "~4.4.0",
+    "angular": "~1.4.7"
+  }
+}
