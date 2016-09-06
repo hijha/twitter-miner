@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="twitter-miner">
 
 <head>
     <meta charset="utf-8">
@@ -8,9 +8,9 @@
     <title>Twitter Miner</title>
 
     <!-- Bootstrap -->
-    <link href="public/css/bootstrap.min.css" rel="stylesheet">
-    <link href="public/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="public/css/mystyle.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="css/mystyle.css" rel="stylesheet">
 </head>
 
 
@@ -25,13 +25,18 @@
             </div>
         </div>
     </header>
-    <div class="container">
+    <div class="container" ng-controller="InputController">
         <div class="row row-content">
             <div class="col-xs-12 col-sm-6 row-xs-margin">
-                <input class="form-control" type="text" placeholder="Enter Twitter handle">
+                <input class="form-control" type="text" placeholder="Enter Twitter handle" ng-model="twitterHandle">
             </div>
             <div class="col-xs-12 col-sm-2 row-xs-margin">
-                <input class="form-control" type="number" placeholder="Number of Tweets">
+                <input class="form-control" type="number" placeholder="Number of Tweets" ng-model="numOfTweets">
+            </div>
+            <div class="col-xs-12 col-sm-2 row-xs-margin">
+                <button ng-click="submit()" class="btn btn-sm btn-primary" type="button">
+                    Submit
+                </button>
             </div>
         </div>
         <div class="row row-content">
@@ -41,4 +46,10 @@
         </div>
 
     </div>
+    
+    <!-- AngularJS -->
+    <script src="../bower_components/angular/angular.min.js"></script>
+    <script src="js/app.js"></script>
+
 </body>
+</html>
