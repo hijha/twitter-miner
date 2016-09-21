@@ -1,8 +1,11 @@
-natural = require('natural')
-Twitter = require ('twit')
+var express = require('express');
+    morgan = require('morgan');
+    bodyParser = require('body-parser');
+    natural = require('natural')
+    Twitter = require ('twit')
 
-database = require('./database')
-fs = require('fs')
+var database = require('./database')
+    fs = require('fs')
 
 var config = {
     "consumer_key": process.env.CONSUMER_KEY,
@@ -13,8 +16,28 @@ var config = {
 }
 
 var twitter = new Twitter(config);
-var myDB
-var stopWords = []
+var myDB;
+var stopWords = [];
+    hostname = 'localhost';
+    port = 3000;
+
+
+var app = express();
+
+app.use(morgan('dev'));
+
+app.use(bodyParser.json());
+
+app.use(express.static(__dirname + '/../public'));
+
+app.get('/', function(req, res, next) {
+    console.log("req header is : " + req.header);
+});
+
+
+app.post('/', function(req, res, next) {
+    console.log("testing");
+});
 
 /*
     Callback function for error when retrieving user timeline
@@ -59,9 +82,9 @@ function parseTweet(tweet) {
     });
 };
 
-readStopWords()
-connect()
-twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 100}, timelineSuccess)
+//readStopWords()
+//connect()
+//twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 100}, timelineSuccess)
 
 function connect() {
     database.connectToDatabase(function(db) {
@@ -74,3 +97,8 @@ function readStopWords() {
         stopWords = output.toString().split("\n");
     });
 }
+
+app.listen(port, hostname, function() {
+    console.log('Server running');
+});
+
