@@ -11,7 +11,7 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
             data : {handle : $scope.twitterHandle, number : $scope.numOfTweets}
         }).then (
         function success(response) {
-            console.log(response);
+            console.log(response.data);
         },
         function error(response) {
             console.log("Error connecting : " + response);

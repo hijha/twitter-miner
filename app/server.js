@@ -43,7 +43,7 @@ app.post('/', function(req, res) {
     readStopWords();
     connect();
     getTimeline(handle, num, function() {
-        res.json(topWords.length);
+        res.json(topWords);
     });
 });
 
@@ -115,7 +115,7 @@ function readStopWords() {
 }
 
 function retrieveData(db, callback) {
-    var cursor = db.collection('dictionary').find();
+    var cursor = db.collection('dictionary').find().sort({count : -1});
     count = 0;
     cursor.each(function(err, doc) {
         if (doc != null) {
