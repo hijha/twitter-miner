@@ -5,17 +5,16 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
     $scope.numOfTweets;
     
     $scope.submit = function() {
-        $scope.numOfTweets = 100;
         return $http({
             method: 'POST',
-            url : '/'
+            url : '/',
+            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets}
         }).then (
         function success(response) {
-            console.log("testing 1");
             console.log(response);
         },
         function error(response) {
-            console.log("testing 2");
+            console.log("Error connecting : " + response);
         });
     }
 }]);

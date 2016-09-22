@@ -21,6 +21,7 @@ var stopWords = [];
     hostname = 'localhost';
     port = 3000;
 
+var topWords = [];
 
 var app = express();
 
@@ -36,9 +37,26 @@ app.get('/', function(req, res, next) {
 
 
 app.post('/', function(req, res) {
-    console.log("test");
-    res.json("testing...");
+    var handle = req.body.handle;
+    var num = req.body.number;
+    console.log(handle + " " + num);
+    readStopWords();
+    connect();
+    getTimeline(handle, num, function() {
+        res.json(topWords.length);
+    });
 });
+
+function getTimeline(handle, num, callback) {
+    twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
+        var text = ""
+        data.forEach(function(tweet) {
+            console.log(tweet.text.toLowerCase());
+            parseTweet(tweet.text.toLowerCase())
+        });
+        retrieveData(myDB, callback);
+    });
+}
 
 /*
     Callback function for error when retrieving user timeline
@@ -55,10 +73,11 @@ var error = function (err, response, body) {
 var timelineSuccess = function (err, data, response) {
     var text = ""
     data.forEach(function(tweet) {
+        console.log(tweet.text.toLowerCase());
         parseTweet(tweet.text.toLowerCase())
     });
+    retrieveData(myDB, callback);
 };
-
 /*
     Function that parses the text into individual words (token) and
     adds to database.
@@ -83,10 +102,6 @@ function parseTweet(tweet) {
     });
 };
 
-//readStopWords()
-//connect()
-//twitter.get('statuses/user_timeline', {screen_name : 'jay_s_h', count : 100}, timelineSuccess)
-
 function connect() {
     database.connectToDatabase(function(db) {
         myDB = db
@@ -98,6 +113,21 @@ function readStopWords() {
         stopWords = output.toString().split("\n");
     });
 }
+
+function retrieveData(db, callback) {
+    var cursor = db.collection('dictionary').find();
+    count = 0;
+    cursor.each(function(err, doc) {
+        if (doc != null) {
+            count++;
+            topWords.push(doc.word);
+            if (count == 10) {
+                callback();
+                return false;
+            }
+        }
+    });
+};
 
 app.listen(port, hostname, function() {
     console.log('Server running');
