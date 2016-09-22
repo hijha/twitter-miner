@@ -117,11 +117,13 @@ function readStopWords() {
 function retrieveData(db, callback) {
     var cursor = db.collection('dictionary').find().sort({count : -1});
     count = 0;
+    topWords = [];
     cursor.each(function(err, doc) {
         if (doc != null) {
             count++;
             topWords.push(doc.word);
             if (count == 10) {
+                console.log("count = " +  count);
                 callback();
                 return false;
             }
