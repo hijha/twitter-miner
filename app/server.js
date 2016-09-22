@@ -35,8 +35,9 @@ app.get('/', function(req, res, next) {
 });
 
 
-app.post('/', function(req, res, next) {
-    console.log("testing");
+app.post('/', function(req, res) {
+    console.log("test");
+    res.json("testing...");
 });
 
 /*

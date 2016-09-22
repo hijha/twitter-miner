@@ -5,13 +5,17 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
     $scope.numOfTweets;
     
     $scope.submit = function() {
-        $http.post('/', $scope.formData)
-            .success(function(data) {
-                console.log("print anything");
-                console.log(data);
-            })
-            .error(function(data) {
-                console.log('Error : ' + data);
-            });
+        $scope.numOfTweets = 100;
+        return $http({
+            method: 'POST',
+            url : '/'
+        }).then (
+        function success(response) {
+            console.log("testing 1");
+            console.log(response);
+        },
+        function error(response) {
+            console.log("testing 2");
+        });
     }
 }]);
