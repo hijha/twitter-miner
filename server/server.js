@@ -35,13 +35,14 @@ app.get('/', function(req, res, next) {
     console.log("req header is : " + req.header);
 });
 
-
 app.post('/', function(req, res) {
     var handle = req.body.handle;
     var num = req.body.number;
     console.log(handle + " " + num);
+
     readStopWords();
     connect();
+
     getTimeline(handle, num, function() {
         res.json(topWords);
     });
@@ -78,6 +79,7 @@ var timelineSuccess = function (err, data, response) {
     });
     retrieveData(myDB, callback);
 };
+
 /*
     Function that parses the text into individual words (token) and
     adds to database.
@@ -123,7 +125,6 @@ function retrieveData(db, callback) {
             count++;
             topWords.push(doc.word);
             if (count == 10) {
-                console.log("count = " +  count);
                 callback();
                 return false;
             }
