@@ -6,6 +6,7 @@ var express = require('express');
 
 var database = require('./database')
     fs = require('fs')
+    routes = require('./../routes')
 
 var config = {
     "consumer_key": process.env.CONSUMER_KEY,
