@@ -76,22 +76,15 @@ function parseTweet (tweet) {
 
 retrieveData = function (db, callback) {
     console.log("....");
-    var cursor = myDB.collection('dictionary').find().sort({count : -1});
-    count = 0;
-    topWords = [];
-    cursor.each(function(err, doc) {
-        console.log("testing");
-        if (doc != null) {
-            count++;
-            topWords.push(doc.word);
-            if (count == 10) {
-                db.close();
-                return (callback());
-            } /*else if (!cursor.hasNext()._result) {
-                console.log("here...");
-                db.close();
-                callback();  
-            }*/
+    var collection = myDB.collection('dictionary');
+    var cursor = collection.find().sort({count : -1});
+    cursor.toArray(function(err, docs) {
+        console.log("count is = " + docs.length);
+        count = docs.length >= 10 ? 10 : docs.length;
+        topWords = [];
+        for (i = 0; i < docs.length; i++) {
+            topWords.push(docs[i]);
         }
+        return callback();
     });
 }
