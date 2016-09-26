@@ -82,7 +82,7 @@ retrieveData = function (db, callback) {
         count = docs.length >= 10 ? 10 : docs.length;
         topWords = [];
         for (i = 0; i < count; i++) {
-            topWords.push(docs[i]);
+            topWords.push(docs[i].word);
         }
         return callback();
     });
