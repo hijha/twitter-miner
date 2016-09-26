@@ -79,10 +79,9 @@ retrieveData = function (db, callback) {
     var collection = myDB.collection('dictionary');
     var cursor = collection.find().sort({count : -1});
     cursor.toArray(function(err, docs) {
-        console.log("count is = " + docs.length);
         count = docs.length >= 10 ? 10 : docs.length;
         topWords = [];
-        for (i = 0; i < docs.length; i++) {
+        for (i = 0; i < count; i++) {
             topWords.push(docs[i]);
         }
         return callback();

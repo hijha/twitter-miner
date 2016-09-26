@@ -15,7 +15,6 @@ module.exports = function(app, database) {
         twitterMiner.connect(handle);
 
         twitterMiner.getTimeline(handle, num, function() {
-            console.log(topWords);
             res.json(topWords);
         });
     });
