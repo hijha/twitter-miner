@@ -5,6 +5,8 @@ var mongodb = require('mongodb')
 var MongoClient = mongodb.MongoClient;
 var url = 'mongodb://localhost:27017/myTestDB';
 
+var userHandle;
+
 exports.connectToDatabase = function (callback) {
 	MongoClient.connect(url, function (err, db) {
         if (err) {
@@ -16,7 +18,8 @@ exports.connectToDatabase = function (callback) {
     });
 }
 
-exports.insert = function (db, wordArray, callback) {
+exports.insert = function (db, handle, wordArray, callback) {
+    userHandle = handle;
     var collection = db.collection('dictionary')
 
     collection.bulkWrite(wordArray.map(insertCallback), function (err, result) {
@@ -45,7 +48,7 @@ exports.getCommonWords = function (db, count, callback) {
 
 function insertCallback(word) {
     return { "updateOne" : {
-                "filter" : {"word" : word},
+                "filter" : {"handle" : userHandle, "word" : word},
                 "update" : {"$inc"   : {"count" : 1 } },
                 "upsert" : true }
     }

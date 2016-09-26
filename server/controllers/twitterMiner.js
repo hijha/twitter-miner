@@ -56,7 +56,7 @@ parseTweet = function (tweet) {
             newTokenArray.push(tokenArray[i])
         }
     }
-    database.insert(myDB, newTokenArray, function(err, result) {
+    database.insert(myDB, handle, newTokenArray, function(err, result) {
         if (err) {
             console.log(err)
         } else {
