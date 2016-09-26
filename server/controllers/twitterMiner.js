@@ -48,7 +48,7 @@ exports.getTimeline = function (handle, num, callback) {
                 console.log(err)
             } else {
                 console.log("Succcessfully added %s to the database ", result.upsertedCount)
-                retrieveData(myDB, callback);
+                retrieveData(myDB, handle, callback);
             }
         });
         
@@ -74,10 +74,13 @@ function parseTweet (tweet) {
     return newTokenArray;
 }
 
-retrieveData = function (db, callback) {
+retrieveData = function (db, handle, callback) {
     console.log("....");
     var collection = myDB.collection('dictionary');
-    var cursor = collection.find().sort({count : -1});
+    var cursor = collection.aggregate([
+                                {$match : {"handle" : handle}},
+                                {$sort : {count  : -1}}
+                            ]);
     cursor.toArray(function(err, docs) {
         count = docs.length >= 10 ? 10 : docs.length;
         topWords = [];
