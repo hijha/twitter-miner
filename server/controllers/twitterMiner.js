@@ -18,8 +18,8 @@ var myDB;
     topWords = [];
     twitter = new Twitter(config);
 
-exports.connect = function() {
-    database.connectToDatabase(function(db) {
+exports.connect = function(handle) {
+    database.connectToDatabase(handle, function(db) {
         myDB = db
     });
 }
@@ -32,13 +32,28 @@ exports.readStopWords = function() {
 
 exports.getTimeline = function (handle, num, callback) {
     twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
-        var text = ""
+        var list = [];
         data.forEach(function(tweet) {
-            console.log(tweet.text.toLowerCase());
-            parseTweet(tweet.text.toLowerCase())
+            var tweetText = tweet.text.toLowerCase();
+            console.log(tweetText);
+            words = parseTweet(tweetText);
+            
+            words.forEach(function(word) {
+                list.push(word);
+            });
         });
-        retrieveData(myDB, callback);
+        
+        database.insert(myDB, list, function(err, result) {
+            if (err) {
+                console.log(err)
+            } else {
+                console.log("Succcessfully added %s to the database ", result.upsertedCount)
+                retrieveData(myDB, callback);
+            }
+        });
+        
     });
+    
 }
 
 /*
@@ -47,36 +62,36 @@ exports.getTimeline = function (handle, num, callback) {
 
     TODO:: result.upsertedcount only looks at inserts, not updates
 */
-parseTweet = function (tweet) {
+function parseTweet (tweet) {
     tokenizer = new natural.WordTokenizer();
     var tokenArray = tokenizer.tokenize(tweet)
-    var newTokenArray = []
+    var newTokenArray = [];
     for (i = 0; i < tokenArray.length; i++) {
         if (stopWords.indexOf(tokenArray[i]) == -1) {
             newTokenArray.push(tokenArray[i])
         }
     }
-    database.insert(myDB, handle, newTokenArray, function(err, result) {
-        if (err) {
-            console.log(err)
-        } else {
-            console.log("Succcessfully added %s to the database ", result.upsertedCount)
-        }
-    });
+    return newTokenArray;
 }
 
 retrieveData = function (db, callback) {
-    var cursor = db.collection('dictionary').find().sort({count : -1});
+    console.log("....");
+    var cursor = myDB.collection('dictionary').find().sort({count : -1});
     count = 0;
     topWords = [];
     cursor.each(function(err, doc) {
+        console.log("testing");
         if (doc != null) {
             count++;
             topWords.push(doc.word);
             if (count == 10) {
-                callback();
-                return false;
-            }
+                db.close();
+                return (callback());
+            } /*else if (!cursor.hasNext()._result) {
+                console.log("here...");
+                db.close();
+                callback();  
+            }*/
         }
     });
 }

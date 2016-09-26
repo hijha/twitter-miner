@@ -7,7 +7,8 @@ var url = 'mongodb://localhost:27017/myTestDB';
 
 var userHandle;
 
-exports.connectToDatabase = function (callback) {
+exports.connectToDatabase = function (handle, callback) {
+    userHandle = handle;
 	MongoClient.connect(url, function (err, db) {
         if (err) {
             console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -18,8 +19,7 @@ exports.connectToDatabase = function (callback) {
     });
 }
 
-exports.insert = function (db, handle, wordArray, callback) {
-    userHandle = handle;
+exports.insert = function (db, wordArray, callback) {
     var collection = db.collection('dictionary')
 
     collection.bulkWrite(wordArray.map(insertCallback), function (err, result) {

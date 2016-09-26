@@ -12,9 +12,10 @@ module.exports = function(app, database) {
         console.log(handle + " " + num);
 
         twitterMiner.readStopWords();
-        twitterMiner.connect();
+        twitterMiner.connect(handle);
 
         twitterMiner.getTimeline(handle, num, function() {
+            console.log(topWords);
             res.json(topWords);
         });
     });
