@@ -4,6 +4,7 @@ var Twitter = require ('twit');
 
 var database = require('./database')
     fs = require('fs')
+    path = require('path')
 
 var config = {
     "consumer_key": process.env.CONSUMER_KEY,
@@ -25,7 +26,9 @@ exports.connect = function(handle) {
 }
 
 exports.readStopWords = function() {
-    fs.readFile("stopwords.txt", function(err, output) {
+    global.approot = path.resolve(__dirname);
+    stopwordsFilepath = approot + '/stopwords.txt';
+    fs.readFile(stopwordsFilepath, function(err, output) {
         stopWords = output.toString().split("\n");
     });
 }
