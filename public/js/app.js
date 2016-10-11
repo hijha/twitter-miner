@@ -9,7 +9,7 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
         return $http({
             method: 'POST',
             url : '/',
-            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets}
+            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets, startDate : $scope.startDate}
         }).then (
         function success(response) {
             console.log(response.data);

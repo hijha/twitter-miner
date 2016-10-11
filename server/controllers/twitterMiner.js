@@ -33,30 +33,41 @@ exports.readStopWords = function() {
     });
 }
 
-exports.getTimeline = function (handle, num, callback) {
+exports.getTimeline = function (handle, num, date, callback) {
     twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
-        var list = [];
+        var tweets = [];
+        tweetCount = 0;
         data.forEach(function(tweet) {
-            var tweetText = tweet.text.toLowerCase();
-            console.log(tweetText);
-            words = parseTweet(tweetText);
-            
-            words.forEach(function(word) {
-                list.push(word);
-            });
-        });
-        
-        database.insert(myDB, list, function(err, result) {
-            if (err) {
-                console.log(err)
-            } else {
-                console.log("Succcessfully added %s to the database ", result.upsertedCount)
-                retrieveData(myDB, handle, callback);
+            tweetDate = Date.parse(tweet.created_at);
+            tweetCount += 1;
+            if (tweetCount <= num && tweetDate > date) {
+                tweetText = tweet.text.toLowerCase();
+                tweets.push(tweetText);
             }
         });
-        
+        parseUserTimeline(tweets, handle, callback);
     });
-    
+}
+
+function parseUserTimeline (tweets, handle, callback) {
+    var list = [];
+    tweets.forEach(function(tweet) {
+        console.log(tweet);
+        words = parseTweet(tweet);
+        
+        words.forEach(function(word) {
+            list.push(word);
+        });
+    });
+
+    database.insert(myDB, list, function(err, result) {
+        if (err) {
+            console.log(err)
+        } else {
+            console.log("Succcessfully added %s to the database ", result.upsertedCount)
+            retrieveData(myDB, handle, callback);
+        }
+    });
 }
 
 /*
