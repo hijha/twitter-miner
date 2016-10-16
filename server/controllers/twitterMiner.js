@@ -5,19 +5,11 @@ var Twitter = require ('twit');
 var database = require('./database')
     fs = require('fs')
     path = require('path')
-
-var config = {
-    "consumer_key": process.env.CONSUMER_KEY,
-    "consumer_secret": process.env.CONSUMER_SECRET,
-    "access_token": process.env.ACCESS_TOKEN,
-    "access_token_secret": process.env.ACCESS_TOKEN_SECRET,
-    "timeout_ms": ""
-}
+    twitter = require('./../config/TwitterConfig');
 
 var myDB;
     stopWords = [];
     topWords = [];
-    twitter = new Twitter(config);
 
 exports.connect = function(handle) {
     database.connectToDatabase(handle, function(db) {
@@ -34,7 +26,7 @@ exports.readStopWords = function() {
 }
 
 /**
-    Add tweets to the array, 
+    Add tweets to the array,
  */
 exports.getTimeline = function (handle, num, date, callback) {
     twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
