@@ -33,6 +33,9 @@ exports.readStopWords = function() {
     });
 }
 
+/**
+    Add tweets to the array, 
+ */
 exports.getTimeline = function (handle, num, date, callback) {
     twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
         var tweets = [];
@@ -89,7 +92,6 @@ function parseTweet (tweet) {
 }
 
 retrieveData = function (db, handle, callback) {
-    console.log("....");
     var collection = myDB.collection('dictionary');
     var cursor = collection.aggregate([
                                 {$match : {"handle" : handle}},

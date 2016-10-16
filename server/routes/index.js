@@ -1,4 +1,4 @@
-module.exports = function(app, database) {
+module.exports = function(app) {
 
     var twitterMiner = require('./../controllers/twitterMiner');
 

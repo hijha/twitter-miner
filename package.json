@@ -2,7 +2,6 @@
   "name": "twitter-miner",
   "version": "0.0.1",
   "description": "Extracting information from Twitter",
-  "main" : "app/app.js",
   
   "dependencies": {
     "mongodb": "2.1.16",
