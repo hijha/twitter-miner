@@ -28,8 +28,8 @@ module.exports = function(app) {
         twitterMiner.readStopWords();
         twitterMiner.connect(handle);
 
-        twitterMiner.analyseUserTimeline(handle, function() {
-            
+        twitterMiner.getUserTimeline(handle, function(mongooseConn) {
+            mongooseConn.close();
         });
     });
 };

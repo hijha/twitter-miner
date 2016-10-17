@@ -1,9 +1,12 @@
 var exports = module.exports = {}
 
 var mongoose = require('mongoose')
+    Tweet = require('./../models/Tweet');
+
 var url = 'mongodb://localhost:27017/myTestDB';
 
 var userHandle;
+
 
 exports.connectToDatabase = function (handle, callback) {
     userHandle = handle;
@@ -13,6 +16,30 @@ exports.connectToDatabase = function (handle, callback) {
     db.once('open', function() {
         console.log('Connection established to' , url);
         return callback(db)
+    });
+}
+
+exports.addTweetToDatabase = function(handle, inputTweet) {
+   var tweet = new Tweet({
+        user : handle,
+        text : inputTweet.text.toLowerCase(),
+        date : inputTweet.created_at,
+        id : inputTweet.id
+    });
+    tweet.save();
+}
+
+exports.findUserIfExists = function(handle, callback) {
+    Tweet.findOne({user : handle}, function(err, tweet) {
+        if (err) return callback(err);
+
+        if (tweet == null) {
+            console.log("returning null")
+            return callback(null, null)
+        } else {
+            console.log("returning id " + tweet.id);
+            return callback(null, tweet.id)
+        }
     });
 }
 
