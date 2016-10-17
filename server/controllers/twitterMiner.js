@@ -6,6 +6,7 @@ var database = require('./database')
     fs = require('fs')
     path = require('path')
     twitter = require('./../config/TwitterConfig');
+    Tweet = require('./../models/Tweet');
 
 var myDB;
     stopWords = [];
@@ -26,10 +27,28 @@ exports.readStopWords = function() {
 }
 
 /**
+ *  Get the top 100 tweets for the user and save it in the database
+ */
+exports.analyseUserTimeline = function(handle, callback) {
+    twitter.get('statuses/user_timeline', {screen_name : handle, count : 100}, function (err, timeline, response) {
+        timeline.forEach(function(input) {
+            var tweet = new Tweet({
+                user : 'handle',
+                text : input.text.toLowerCase(),
+                date : input.created_at,
+                id : input.id
+            });
+            tweet.save();
+        });
+        return callback();
+    });
+}
+
+/**
     Add tweets to the array,
  */
 exports.getTimeline = function (handle, num, date, callback) {
-    twitter.get('statuses/user_timeline', {screen_name : handle, count : num}, function (err, data, response) {
+    twitter.get('statuses/user_timeline', {screen_name : handle, count : 100}, function (err, data, response) {
         var tweets = [];
         tweetCount = 0;
         data.forEach(function(tweet) {

@@ -1,20 +1,17 @@
 var exports = module.exports = {}
 
-var mongodb = require('mongodb')
-
-var MongoClient = mongodb.MongoClient;
+var mongoose = require('mongoose')
 var url = 'mongodb://localhost:27017/myTestDB';
 
 var userHandle;
 
 exports.connectToDatabase = function (handle, callback) {
     userHandle = handle;
-	MongoClient.connect(url, function (err, db) {
-        if (err) {
-            console.log('Unable to connect to the mongoDB server. Error:', err);
-        } else {
-            console.log('Connection established to', url);
-        }
+    mongoose.connect(url);
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'Unable to connect to database'));
+    db.once('open', function() {
+        console.log('Connection established to' , url);
         return callback(db)
     });
 }
