@@ -1,22 +1,17 @@
-var app = angular.module('twitter-miner', []);
+'use strict';
 
-app.controller('InputController', ['$scope', '$http', function($scope, $http) {
-    $scope.twitterHandle = "";
-    $scope.numOfTweets;
-    $scope.topWords = [];
-    
-    $scope.submit = function() {
-        return $http({
-            method: 'POST',
-            url : '/',
-            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets, startDate : $scope.startDate}
-        }).then (
-        function success(response) {
-            console.log(response.data);
-            $scope.topWords = response.data;
-        },
-        function error(response) {
-            console.log("Error connecting : " + response);
-        });
-    }
-}]);
+var app = angular.module('twitter-miner', ['ngRoute']);
+
+app.config(function($routeProvider) {
+    $routeProvider
+        .when('/topWords', {
+            templateUrl : 'topWords.html',
+            controller : 'InputController'
+        })
+
+        .when('/unfollowed', {
+            template : '<p>hello </p>',
+        })
+
+        .otherwise('/followers');
+});
