@@ -46,7 +46,7 @@ function getNewTimeline(handle, callback) {
         timeline.forEach(function(tweet) {
             database.addTweetToDatabase(handle, tweet);
         });
-        return callback(mongooseConn);
+        return callback(mongooseConn, topWords);
     });
 }
 
@@ -59,6 +59,6 @@ function updateTimeline(handle, callback, lastId) {
         timeline.forEach(function(tweet) {
             database.addTweetToDatabase(handle, tweet);
         });
-        return callback(mongooseConn);
+        return callback(mongooseConn, topWords);
     });
 }
