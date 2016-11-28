@@ -1,17 +1,18 @@
 'use strict';
 
-var app = angular.module('twitter-miner', ['ngRoute']);
+var app = angular.module('twitter-miner', ['ui.router']);
 
-app.config(function($routeProvider) {
-    $routeProvider
-        .when('/topWords', {
+app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+    $stateProvider
+        .state('topWords', {
+            url : '/topWords',
             templateUrl : 'topWords.html',
             controller : 'InputController'
         })
 
-        .when('/unfollowed', {
-            template : '<p>hello </p>',
+        .state('unfollowed', {
+            url : '/unfollowed',
+            template : '<h3>Place holder </h3>
         })
-
-        .otherwise('/followers');
-});
+    $urlRouterProvider.otherwise('/topWords');
+}]);
