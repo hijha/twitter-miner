@@ -27,19 +27,18 @@
     </header>
     <div id = "navbar" class = "navbar-collapse collapse">
         <ul class = "nav navbar-nav">
-            <li class = "active"><a href="#"> Home </a></li>
-            <li class = "active"><a href="#/topWords"> Top Words </a></li>
-            <li class = "active"><a href="#/unfollowed"> Unfollowed </a></li>
+            <li class = "active"><a ui-sref="home"> Home </a></li>
+            <li class = "active"><a ui-sref="topWords"> Top Words </a></li>
+            <li class = "active"><a ui-sref="unfollowed"> Unfollowed </a></li>
         </ul>
     </div>
 
-    <ng-view></ng-view>
+    <ui-view></ui-view>
     
     <!-- AngularJS -->
     <script src="bower_components/angular/angular.min.js"></script>
-    <script src="bower_components/angular-route/angular-route.min.js"></script>
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
     <script src="js/app.js"></script>
     <script src="js/controllers.js"></script>
-
 </body>
 </html>
