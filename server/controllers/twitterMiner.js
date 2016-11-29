@@ -38,6 +38,15 @@ exports.getUserTimeline = function(handle, callback) {
     });
 }
 
+exports.getUnfollowerList = function(handle, callback) {
+    database.checkUserExists(handle, function(err, followers) {
+        if (followers == null) {
+            getListOfFollowers(handle, callback);
+        } else {
+            console.log("followers length = " + followers.length);
+        }
+    });
+}
 /**
     Get the timeline for the user that does not exist in the database
  */
@@ -55,10 +64,18 @@ function getNewTimeline(handle, callback) {
  */
 function updateTimeline(handle, callback, lastId) {
     twitter.get('statuses/user_timeline', {screen_name : handle, count : 100, since_id : lastId}, function (err, timeline, response) {
-        console.log(timeline.length);
         timeline.forEach(function(tweet) {
             database.addTweetToDatabase(handle, tweet);
         });
         return callback(mongooseConn, topWords);
+    });
+}
+
+function getListOfFollowers(handle, callback) {
+    twitter.get('followers/list', {screen_name : handle}, function(err, followers, response) {
+        followers.users.forEach(function(follower) {
+            database.addFollowerToDatabase(handle, follower);
+        });
+        return callback(mongooseConn, followers.users);
     });
 }

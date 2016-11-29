@@ -2,11 +2,11 @@ module.exports = function(app) {
 
     var twitterMiner = require('./../controllers/twitterMiner');
 
-    app.get('/', function(req, res, next) {
+    app.get('/topWords', function(req, res, next) {
         
     });
 
-    app.post('/', function(req, res) {
+    app.post('/topWords', function(req, res) {
         var handle = req.body.handle;
         var num;
         var date;
@@ -30,7 +30,23 @@ module.exports = function(app) {
 
         twitterMiner.getUserTimeline(handle, function(mongooseConn, topWords) {
             res.json(topWords);
-            mongooseConn.close();
+            // TODO :: closing the connection here prevents database from being updated
+            //mongooseConn.close();
+        });
+    });
+
+    app.get('/unfollowed', function(req, res, next) {
+ 
+    });
+
+    app.post('/unfollowed', function(req, res) {
+        var handle = req.body.handle;
+        twitterMiner.connect(handle);
+
+        twitterMiner.getUnfollowerList(handle, function(mongooseConn, unfollowers) {
+            res.json(unfollowers);
+            // TODO :: closing the connection here prevents database from being updated
+            //mongooseConn.close();
         });
     });
 };

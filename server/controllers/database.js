@@ -2,20 +2,29 @@ var exports = module.exports = {}
 
 var mongoose = require('mongoose')
     Tweet = require('./../models/Tweet');
+    Followers = require('./../models/Followers');
 
 var url = 'mongodb://localhost:27017/myTestDB';
 
-var userHandle;
-
-
 exports.connectToDatabase = function (handle, callback) {
-    userHandle = handle;
     mongoose.connect(url);
     var db = mongoose.connection;
     db.on('error', console.error.bind(console, 'Unable to connect to database'));
     db.once('open', function() {
         console.log('Connection established to' , url);
         return callback(db)
+    });
+}
+
+exports.findUserIfExists = function(handle, callback) {
+    Tweet.findOne({user : handle}, function(err, tweet) {
+        if (err) return callback(err);
+
+        if (tweet == null) {
+            return callback(null, null)
+        } else {
+            return callback(null, tweet.id)
+        }
     });
 }
 
@@ -29,18 +38,25 @@ exports.addTweetToDatabase = function(handle, inputTweet) {
     tweet.save();
 }
 
-exports.findUserIfExists = function(handle, callback) {
-    Tweet.findOne({user : handle}, function(err, tweet) {
+exports.checkUserExists = function(handle, callback) {
+    Followers.findOne({user: handle}, function(err, followers) {
         if (err) return callback(err);
 
-        if (tweet == null) {
-            console.log("returning null")
-            return callback(null, null)
+        if (followers == null) {
+            return callback(null, null);
         } else {
-            console.log("returning id " + tweet.id);
-            return callback(null, tweet.id)
+            return callback(null, followers);
         }
     });
+}
+
+exports.addFollowerToDatabase = function (handle, followerInfo) {
+    var follower = new Followers({
+        user : handle,
+        followerName : followerInfo.name,
+        followerHandle : followerInfo.screen_name
+    });
+    follower.save();
 }
 
 exports.insert = function (db, wordArray, callback) {
