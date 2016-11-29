@@ -12,7 +12,7 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
 
         .state('unfollowed', {
             url : '/unfollowed',
-            template : '<h3>Place holder </h3>
+            templateUrl : 'unfollowed.html'
         })
     $urlRouterProvider.otherwise('/topWords');
 }]);
