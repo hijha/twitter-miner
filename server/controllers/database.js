@@ -38,14 +38,20 @@ exports.addTweetToDatabase = function(handle, inputTweet) {
     tweet.save();
 }
 
+/**
+ *  Using find instead of findOne. findOne reads the document and returns it
+ *  if it exists. find only returns a cursor and reads only if required.
+ *  Since we only need to check if the user has been added or not, and don't
+ *  need any extra information, find is better for performance.
+ */
 exports.checkUserExists = function(handle, callback) {
-    Followers.findOne({user: handle}, function(err, followers) {
+    Followers.find({user: handle}).exec(function(err, followersInDB) {
         if (err) return callback(err);
 
-        if (followers == null) {
+        if (followersInDB.length == 0) {
             return callback(null, null);
         } else {
-            return callback(null, followers);
+            return callback(null, followersInDB);
         }
     });
 }
@@ -57,39 +63,4 @@ exports.addFollowerToDatabase = function (handle, followerInfo) {
         followerHandle : followerInfo.screen_name
     });
     follower.save();
-}
-
-exports.insert = function (db, wordArray, callback) {
-    var collection = db.collection('dictionary')
-
-    collection.bulkWrite(wordArray.map(insertCallback), function (err, result) {
-            if (err) {
-                console.log(err)
-            } else {
-                callback(null, result)
-            }
-        });
-}
-
-/*
-    Function to read a specified number of values (count)
-    from the database, which is read in a sorted manner
-*/
-exports.getCommonWords = function (db, count, callback) {
-    var collection = db.collection('dictionary')
-
-    var cursor = collection.find().sort({'count': -1}).limit(count)
-    cursor.forEach(function (entry) {
-        if (entry != null) {
-            callback(null, entry.word)
-        }
-    });
-}
-
-function insertCallback(word) {
-    return { "updateOne" : {
-                "filter" : {"handle" : userHandle, "word" : word},
-                "update" : {"$inc"   : {"count" : 1 } },
-                "upsert" : true }
-    }
 }

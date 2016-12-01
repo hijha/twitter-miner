@@ -38,12 +38,23 @@ exports.getUserTimeline = function(handle, callback) {
     });
 }
 
+/**
+ *  Return the list of users who have unfollowed since the last time
+ *  the database was checked.
+ *  If this is the first time for user, add to database only.
+ */
 exports.getUnfollowerList = function(handle, callback) {
-    database.checkUserExists(handle, function(err, followers) {
-        if (followers == null) {
-            getListOfFollowers(handle, callback);
+    database.checkUserExists(handle, function(err, followersInDB) {
+
+        if (followersInDB == null) {
+            getCurrentFollowers(handle, function(followers) {
+                addFollowersToDatabase(handle, followers, callback);
+            });
         } else {
-            console.log("followers length = " + followers.length);
+            getCurrentFollowers(handle, function(followers) {
+                console.log("db followers length = " + followersInDB.length);
+                console.log("current followers length = " + followers.length);
+            });
         }
     });
 }
@@ -71,11 +82,18 @@ function updateTimeline(handle, callback, lastId) {
     });
 }
 
-function getListOfFollowers(handle, callback) {
+/**
+ *  Twitter rest api call to get a list of current followers
+ */
+function getCurrentFollowers(handle, callback) {
     twitter.get('followers/list', {screen_name : handle}, function(err, followers, response) {
-        followers.users.forEach(function(follower) {
-            database.addFollowerToDatabase(handle, follower);
-        });
-        return callback(mongooseConn, followers.users);
+        return callback(followers.users);
     });
+}
+
+function addFollowersToDatabase(handle, followers, callback) {
+    followers.forEach(function(follower) {
+        database.addFollowerToDatabase(handle, follower);
+    });
+    return callback(mongooseConn, followers);
 }
