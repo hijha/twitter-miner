@@ -115,6 +115,7 @@ function compareFollowersList(followersInDB, currentFollowers, callback) {
         currFollowerList.push(currFoll.followerHandle);
     });
 
+    //TODO:: These followers should also be deleted from the database
     followersInDB.forEach(function(follower) {
         if (currFollowerList.indexOf(follower.followerHandle) == -1) {
             unfollowedList.push(follower);
