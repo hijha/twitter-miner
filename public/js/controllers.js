@@ -14,7 +14,6 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
             data : {handle : $scope.twitterHandle, number : $scope.numOfTweets, startDate : $scope.startDate}
         }).then (
         function success(response) {
-            console.log(response.data);
             $scope.topWords = response.data;
         },
         function error(response) {
@@ -34,7 +33,6 @@ app.controller('Unfollowers', ['$scope', '$http', function($scope, $http) {
             data : {handle : $scope.twitterHandle}
         }).then (
         function success(response) {
-            console.log(response.data);
             $scope.unfollowers = response.data;
         },
         function error(response) {

@@ -44,7 +44,15 @@ module.exports = function(app) {
         twitterMiner.connect(handle);
 
         twitterMiner.getUnfollowerList(handle, function(mongooseConn, unfollowers) {
-            res.json(unfollowers);
+            if (unfollowers == null) {
+                res.json("first time")
+            } else if (unfollowers.length == 0) {
+                res.json("no unfollowers")
+            } else {
+                console.log(unfollowers)
+                res.json(unfollowers);
+            }
+
             // TODO :: closing the connection here prevents database from being updated
             //mongooseConn.close();
         });

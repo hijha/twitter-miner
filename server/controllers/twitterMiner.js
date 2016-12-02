@@ -6,6 +6,7 @@ var database = require('./database')
     fs = require('fs')
     path = require('path')
     twitter = require('./../config/TwitterConfig');
+    Followers = require('./../models/Followers');
 
 var mongooseConn;
     stopWords = [];
@@ -51,9 +52,8 @@ exports.getUnfollowerList = function(handle, callback) {
                 addFollowersToDatabase(handle, followers, callback);
             });
         } else {
-            getCurrentFollowers(handle, function(followers) {
-                console.log("db followers length = " + followersInDB.length);
-                console.log("current followers length = " + followers.length);
+            getCurrentFollowers(handle, function(currentFollowers) {
+                compareFollowersList(followersInDB, currentFollowers, callback);
             });
         }
     });
@@ -86,14 +86,44 @@ function updateTimeline(handle, callback, lastId) {
  *  Twitter rest api call to get a list of current followers
  */
 function getCurrentFollowers(handle, callback) {
+    var listOfFollowers = [];
     twitter.get('followers/list', {screen_name : handle}, function(err, followers, response) {
-        return callback(followers.users);
+        followers.users.forEach(function(follower) {
+            var f = new Followers({
+                user : handle,
+                followerName : follower.name,
+                followerHandle : follower.screen_name
+            });
+            listOfFollowers.push(f);
+        });
+        return callback(listOfFollowers);
     });
 }
 
 function addFollowersToDatabase(handle, followers, callback) {
     followers.forEach(function(follower) {
-        database.addFollowerToDatabase(handle, follower);
+        database.addFollowerToDatabase(follower);
     });
-    return callback(mongooseConn, followers);
+    return callback(mongooseConn, null);
+}
+
+function compareFollowersList(followersInDB, currentFollowers, callback) {
+    var currFollowerList = [];
+    var unfollowedList = [];
+
+    currentFollowers.forEach(function(currFoll) {
+        currFollowerList.push(currFoll.followerHandle);
+    });
+
+    followersInDB.forEach(function(follower) {
+        if (currFollowerList.indexOf(follower.followerHandle) == -1) {
+            unfollowedList.push(follower);
+        }
+    });
+
+    currentFollowers.forEach(function(currFoll) {
+        database.addFollowerToDatabase(currFoll);
+    });
+
+    return callback(mongooseConn, unfollowedList);
 }
