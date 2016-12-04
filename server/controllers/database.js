@@ -56,6 +56,11 @@ exports.checkUserExists = function(handle, callback) {
     });
 }
 
-exports.addFollowerToDatabase = function (follower) {
+exports.addFollowerToDatabase = function (handle, followerInfo) {
+    var follower = new Followers({
+        user : handle,
+        followerName : followerInfo.username,
+        followerHandle : followerInfo.handle
+    });
     follower.save();
 }

@@ -6,7 +6,6 @@ var database = require('./database')
     fs = require('fs')
     path = require('path')
     twitter = require('./../config/TwitterConfig');
-    Followers = require('./../models/Followers');
 
 var mongooseConn;
     stopWords = [];
@@ -53,7 +52,7 @@ exports.getUnfollowerList = function(handle, callback) {
             });
         } else {
             getCurrentFollowers(handle, function(currentFollowers) {
-                compareFollowersList(followersInDB, currentFollowers, callback);
+                compareFollowersList(handle, followersInDB, currentFollowers, callback);
             });
         }
     });
@@ -89,11 +88,9 @@ function getCurrentFollowers(handle, callback) {
     var listOfFollowers = [];
     twitter.get('followers/list', {screen_name : handle}, function(err, followers, response) {
         followers.users.forEach(function(follower) {
-            var f = new Followers({
-                user : handle,
-                followerName : follower.name,
-                followerHandle : follower.screen_name
-            });
+            var f = new Object();
+            f.username = follower.name;
+            f.handle = follower.screen_name;
             listOfFollowers.push(f);
         });
         return callback(listOfFollowers);
@@ -102,17 +99,17 @@ function getCurrentFollowers(handle, callback) {
 
 function addFollowersToDatabase(handle, followers, callback) {
     followers.forEach(function(follower) {
-        database.addFollowerToDatabase(follower);
+        database.addFollowerToDatabase(handle, follower);
     });
     return callback(mongooseConn, null);
 }
 
-function compareFollowersList(followersInDB, currentFollowers, callback) {
+function compareFollowersList(handle, followersInDB, currentFollowers, callback) {
     var currFollowerList = [];
     var unfollowedList = [];
 
     currentFollowers.forEach(function(currFoll) {
-        currFollowerList.push(currFoll.followerHandle);
+        currFollowerList.push(currFoll.handle);
     });
 
     //TODO:: These followers should also be deleted from the database
@@ -123,7 +120,7 @@ function compareFollowersList(followersInDB, currentFollowers, callback) {
     });
 
     currentFollowers.forEach(function(currFoll) {
-        database.addFollowerToDatabase(currFoll);
+        database.addFollowerToDatabase(handle, currFoll);
     });
 
     return callback(mongooseConn, unfollowedList);

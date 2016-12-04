@@ -45,11 +45,12 @@ module.exports = function(app) {
 
         twitterMiner.getUnfollowerList(handle, function(mongooseConn, unfollowers) {
             if (unfollowers == null) {
-                res.json("first time")
+                console.log("first time");
+                res.json([])
             } else if (unfollowers.length == 0) {
-                res.json("no unfollowers")
+                console.log("no unfollowers")
+                res.json([])
             } else {
-                console.log(unfollowers)
                 res.json(unfollowers);
             }
 
