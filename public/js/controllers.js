@@ -25,6 +25,7 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
 app.controller('Unfollowers', ['$scope', '$http', function($scope, $http) {
     $scope.twitterHandle = "";
     $scope.unfollowers = [];
+    $scope.updateMessage = "";
 
     $scope.submit = function() {
         return $http({
@@ -33,7 +34,13 @@ app.controller('Unfollowers', ['$scope', '$http', function($scope, $http) {
             data : {handle : $scope.twitterHandle}
         }).then (
         function success(response) {
-            $scope.unfollowers = response.data;
+            $scope.unfollowers = response.data.unfollowers;
+            if ($scope.unfollowers.length == 0) {
+                if (response.data.firstLogin)
+                    $scope.updateMessage = "First login"
+                else
+                    $scope.updateMessage = "No unfollowers"
+            }
         },
         function error(response) {
             console.log("Error connecting : " + response);

@@ -45,13 +45,11 @@ module.exports = function(app) {
 
         twitterMiner.getUnfollowerList(handle, function(mongooseConn, unfollowers) {
             if (unfollowers == null) {
-                console.log("first time");
-                res.json([])
+                res.json({"unfollowers" : [], "firstLogin" : true})
             } else if (unfollowers.length == 0) {
-                console.log("no unfollowers")
-                res.json([])
+                res.json({"unfollowers" : [], "firstLogin" : false})
             } else {
-                res.json(unfollowers);
+                res.json({"unfollowers" : unfollowers});
             }
 
             // TODO :: closing the connection here prevents database from being updated
