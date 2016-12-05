@@ -43,7 +43,7 @@ module.exports = function(app) {
         var handle = req.body.handle;
         twitterMiner.connect(handle);
 
-        twitterMiner.getUnfollowerList(handle, function(mongooseConn, unfollowers) {
+        twitterMiner.getUnfollowers(handle, function(mongooseConn, unfollowers) {
             if (unfollowers == null) {
                 res.json({"unfollowers" : [], "firstLogin" : true})
             } else if (unfollowers.length == 0) {

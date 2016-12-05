@@ -8,6 +8,8 @@ var followersSchema = new Schema({
     followerHandle : String
 });
 
+followersSchema.index({user : 1, followerHandle : 1}, {unique: true});
+
 var Followers = mongoose.model('Followers', followersSchema);
 
 module.exports = Followers;

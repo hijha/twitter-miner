@@ -40,6 +40,8 @@ app.controller('Unfollowers', ['$scope', '$http', function($scope, $http) {
                     $scope.updateMessage = "First login"
                 else
                     $scope.updateMessage = "No unfollowers"
+            } else {
+                $scope.updateMessage = ""
             }
         },
         function error(response) {

@@ -44,7 +44,7 @@ exports.addTweetToDatabase = function(handle, inputTweet) {
  *  Since we only need to check if the user has been added or not, and don't
  *  need any extra information, find is better for performance.
  */
-exports.checkUserExists = function(handle, callback) {
+exports.checkUserFollowerListExists = function(handle, callback) {
     Followers.find({user: handle}).exec(function(err, followersInDB) {
         if (err) return callback(err);
 
@@ -56,11 +56,17 @@ exports.checkUserExists = function(handle, callback) {
     });
 }
 
-exports.addFollowerToDatabase = function (handle, followerInfo) {
+exports.addFollower = function (handle, followerInfo) {
     var follower = new Followers({
         user : handle,
         followerName : followerInfo.username,
         followerHandle : followerInfo.handle
     });
     follower.save();
+}
+
+exports.deleteFollower = function(handle, unfollowerHandle) {
+    Followers.remove({user : handle, followerHandle : unfollowerHandle}, function(err) {
+
+    });
 }

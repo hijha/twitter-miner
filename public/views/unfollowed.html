@@ -1,0 +1,21 @@
+<div class="container" ng-controller="Unfollowers">
+    <div class="row row-content">
+        <div class="col-xs-12 col-sm-8 row-xs-margin">
+            <input class="form-control" type="text" placeholder="Enter Twitter handle" ng-model="twitterHandle">
+        </div>
+        <div class="col-xs-12 col-sm-2 row-xs-margin">
+            <button ng-click="submit()" class="btn btn-sm btn-primary" type="button">
+                Submit
+            </button>
+        </div>
+    </div>
+    <div class="row row-content">
+        <div class="col-xs-12">
+            <h3> Most recent unfollowed : </h3>
+            <li ng-repeat = "follower in unfollowers">
+                <p>{{follower.followerName}}</p>
+            </li>
+            <p> {{updateMessage}} </p>
+        </div>
+    </div>
+</div>
