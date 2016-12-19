@@ -6,13 +6,13 @@ app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $ur
     $stateProvider
         .state('topWords', {
             url : '/topWords',
-            templateUrl : 'topWords.html',
+            templateUrl : 'views/topWords.html',
             controller : 'InputController'
         })
 
         .state('unfollowed', {
             url : '/unfollowed',
-            templateUrl : 'unfollowed.html',
+            templateUrl : 'views/unfollowed.html',
             controller : 'Unfollowers'
         })
     $urlRouterProvider.otherwise('/topWords');
