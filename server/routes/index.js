@@ -8,30 +8,14 @@ module.exports = function(app) {
 
     app.post('/topWords', function(req, res) {
         var handle = req.body.handle;
-        var num;
-        var date;
-
-        if (req.body.number == undefined || req.body.number > 10) {
-            num = 10;
-        } else {
-            num = req.body.number;
-        }
-
-        if (req.body.startDate == undefined) {
-            date = 0;
-        } else {
-            date = Date.parse(req.body.startDate);
-        }
+        var num = req.body.number;
+        var date = req.body.thresholdDate;
 
         console.log(handle + " " + num + " " + date);
 
-        twitterMiner.readStopWords();
         twitterMiner.connect(handle);
-
-        twitterMiner.getUserTimeline(handle, function(mongooseConn, topWords) {
+        twitterMiner.getCommonWords(handle, num, date, function(topWords) {
             res.json(topWords);
-            // TODO :: closing the connection here prevents database from being updated
-            //mongooseConn.close();
         });
     });
 

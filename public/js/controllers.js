@@ -11,7 +11,7 @@ app.controller('InputController', ['$scope', '$http', function($scope, $http) {
         return $http({
             method: 'POST',
             url : '/topWords',
-            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets, startDate : $scope.startDate}
+            data : {handle : $scope.twitterHandle, number : $scope.numOfTweets, startDate : $scope.thresholdDate}
         }).then (
         function success(response) {
             $scope.topWords = response.data;
