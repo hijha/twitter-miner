@@ -9,7 +9,7 @@ module.exports = function(app) {
     app.post('/topWords', function(req, res) {
         var handle = req.body.handle;
         var num = req.body.number;
-        var date = req.body.thresholdDate;
+        var date = req.body.date;
 
         console.log(handle + " " + num + " " + date);
 

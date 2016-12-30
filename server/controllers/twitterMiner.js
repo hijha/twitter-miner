@@ -15,7 +15,6 @@ exports.connect = function(handle) {
 
 exports.getCommonWords = function(handle, num, date, callback) {
     thresholdDate = new Date(date);
-    console.log(thresholdDate)
 
     commonWords.getCommonWords(handle, thresholdDate, function(words) {
         commonWords = words.slice(0,num);

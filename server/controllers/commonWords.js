@@ -50,13 +50,20 @@ function getMostCommonWords (tweets, callback) {
             }
         }
     });
-    var tweetWords = [];
+    var wordMap = [];
     for (var word in tweetDictionary) {
-        tweetWords.push([word, tweetDictionary[word]]);
+        wordMap.push([word, tweetDictionary[word]]);
     }
-    tweetWords.sort(function(a, b) {
+
+    wordMap.sort(function(a, b) {
         return b[1] -  a[1]
     });
+
+    var tweetWords = [];
+    for (i = 0; i < wordMap.length; i++) {
+        tweetWords.push(wordMap[i][0]);
+    }
+
     callback(tweetWords)
 }
 
