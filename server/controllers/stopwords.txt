@@ -291,11 +291,13 @@ q
 quite
 r
 rather
+re
 really
 right
 right
 room
 rooms
+rt
 s
 said
 same
