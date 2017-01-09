@@ -4,8 +4,8 @@ var Twitter = require ('twit');
 
 var twitter = require('./../config/TwitterConfig');
     database = require('./database')
-    unfollow = require('./unfollow')
-    commonWords = require('./commonWords');
+    unfollowModule = require('./unfollow')
+    commonWordsModule = require('./commonWords');
 
 exports.connect = function(handle) {
     database.connectToDatabase(handle, function(db) {
@@ -16,12 +16,12 @@ exports.connect = function(handle) {
 exports.getCommonWords = function(handle, num, date, callback) {
     thresholdDate = new Date(date);
 
-    commonWords.getCommonWords(handle, thresholdDate, function(words) {
+    commonWordsModule.getCommonWords(handle, thresholdDate, function(words) {
         commonWords = words.slice(0,num);
         callback(commonWords)
     });
 }
 
 exports.getUnfollowers = function(handle, callback) {
-    unfollow.getUnfollowersList(handle, callback);
+    unfollowModule.getUnfollowersList(handle, callback);
 }

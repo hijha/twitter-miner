@@ -70,6 +70,16 @@ function getMostCommonWords (tweets, callback) {
 function parseTweet(tweetText) {
     tweetText = tweetText.toLowerCase();
     tokenizer = new natural.WordTokenizer();
+    var urlInstance = [];
+
+    var regex = /https\S*\s*|#\S*\s*/g;
+    while ((myArray = regex.exec(tweetText)) !== null) {
+        urlInstance.push(myArray[0])
+    }
+
+    for (var i in urlInstance) {
+        tweetText = tweetText.replace(urlInstance[i], "")
+    }
 
     var tokenArray = tokenizer.tokenize(tweetText)
     var tweetWords = []
